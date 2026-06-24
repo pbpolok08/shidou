@@ -65,12 +65,10 @@ cursor:pointer;
 
 <h2>Welcome Back</h2>
 
-<form>
+    <form autocomplete="off"></form>
 
-<input id="user" type="text" placeholder="polok">
-
-<input id="pass" type="password" placeholder="1234">
-
+<input id="user" type="text" placeholder="Username" autocomplete="off">
+<input id="pass" type="password" placeholder="Password" autocomplete="new-password">
 <button type="button" onclick="login()">Login</button>
 <label>
 <input type="checkbox" onclick="showPass()">
@@ -86,7 +84,7 @@ function login(){
 let user = document.getElementById("user").value;
 let pass = document.getElementById("pass").value;
 
-if(user=="polok" && pass=="1234"){
+if(user=="polok" && pass=="1682008"){
 
 localStorage.setItem("loggedIn","true");
 window.location.href="index.html";
