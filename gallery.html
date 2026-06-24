@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shidou </title>
+
+<style>
+
+body{
+background:#0a0a0a;
+color:white;
+font-family:Segoe UI,sans-serif;
+text-align:center;
+margin:0;
+}
+
+header{
+padding:20px;
+background:black;
+}
+
+header a{
+color:cyan;
+text-decoration:none;
+font-size:18px;
+}
+
+h1{
+margin:20px 0;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:20px;
+max-width:1200px;
+margin:auto;
+}
+h1{
+font-size:50px;
+color:white;
+text-shadow:
+0 0 10px #00ffff,
+0 0 25px #00ffff;
+margin-bottom:20px;
+}
+.gallery img{
+width:100%;
+height:300px;
+object-fit:cover;
+border-radius:15px;
+transition:.4s;
+cursor:pointer;
+box-shadow:0 0 10px rgba(0,255,255,.2);
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #00ffff;
+}
+
+.upload{
+margin:20px;
+}
+.back-btn{
+display:inline-block;
+margin:20px;
+padding:12px 28px;
+background:linear-gradient(90deg,#00ffff,#008cff);
+color:white;
+text-decoration:none;
+border-radius:30px;
+font-weight:bold;
+box-shadow:0 0 15px #00ffff;
+transition:.3s;
+}
+
+.back-btn:hover{
+transform:translateY(-4px);
+box-shadow:0 0 30px #00ffff;
+}
+</style>
+</head>
+<body>
+
+<header>
+<a href="index.html" class="back-btn">
+⬅ Back Home
+</a>
+</header>
+
+<h1>My Photo Gallery</h1>
+
+<div class="upload">
+
+</div>
+
+<div class="gallery">
+
+<img src="photo1.jpg" alt="Photo 1">
+<img src="photo2.jpg" alt="Photo 2">
+<img src="photo3.jpg" alt="Photo 3">
+<img src="photo4.jpg" alt="Photo 4">
+<img src="photo5.jpg" alt="Photo 5">
+<img src="photo6.jpg" alt="Photo 6">
+<img src="photo7.jpg" alt="Photo 7">
+<img src="photo8.jpg" alt="Photo 8">
+<img src="photo9.jpg" alt="Photo 9">
+
+</div>
+<script>
+
+if(localStorage.getItem("loggedIn")!="true"){
+window.location.href="login.html";
+}
+
+</script>
+</body>
+</html>

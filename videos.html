@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Videos</title>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.video{
+padding:20px;
+}
+
+video{
+width:500px;
+max-width:90%;
+border-radius:15px;
+box-shadow:0 0 20px #00ffff;
+margin:15px;
+}
+
+a{
+color:cyan;
+}
+.back-btn{
+display:inline-block;
+margin:20px;
+padding:12px 25px;
+background:linear-gradient(90deg,#00ffff,#008cff);
+color:white;
+text-decoration:none;
+border-radius:30px;
+font-weight:bold;
+box-shadow:0 0 15px #00ffff;
+transition:.3s;
+}
+
+.back-btn:hover{
+transform:translateY(-4px);
+box-shadow:0 0 30px #00ffff;
+}
+</style>
+
+</head>
+<body>
+
+<h1>My Videos</h1>
+
+<a href="index.html" class="back-btn">
+⬅ Back Home
+</a>
+
+<div class="video">
+
+<video controls>
+<source src="video1.mp4" type="video/mp4">
+</video>
+
+<br><br>
+
+<video controls>
+<source src="video2.mp4" type="video/mp4">
+</video>
+<video controls>
+<source src="video3.mp4" type="video/mp4">
+</video>
+<video controls>
+<source src="video4.mp4" type="video/mp4">
+</video>
+<video controls>
+<source src="video5.mp4" type="video/mp4">
+</video>
+
+</div>
+<script>
+
+if(localStorage.getItem("loggedIn")!="true"){
+window.location.href="login.html";
+}
+
+</script>
+</body>
+</html>
