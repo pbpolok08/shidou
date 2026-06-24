@@ -508,19 +508,37 @@ document.getElementById("loader").style.display="none";
     
     <script>
 
-if(localStorage.getItem("loggedIn")!="true"){
-window.location.href="login.html";
-}
-
-window.addEventListener("load",function(){
-document.getElementById("loader").style.display="none";
-});
 
 function logout(){
 localStorage.removeItem("loggedIn");
 window.location.href="login.html";
 }
 
+let timer;
+
+function resetTimer(){
+
+clearTimeout(timer);
+
+timer = setTimeout(function(){
+
+localStorage.removeItem("loggedIn");
+alert("Logged out due to inactivity");
+window.location.href="login.html";
+
+},300000);
+
+}
+
+document.addEventListener("mousemove",resetTimer);
+document.addEventListener("keypress",resetTimer);
+document.addEventListener("click",resetTimer);
+
+resetTimer();
+window.addEventListener("beforeunload", function(){
+localStorage.removeItem("loggedIn");
+});
 </script>
+
 </body>
 </html>         
