@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Videos</title>
+
+<style>
+
+body{
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+}
+
+.video{
+padding:20px;
+}
+
+video{
+width:500px;
+max-width:90%;
+border-radius:15px;
+box-shadow:0 0 20px #00ffff;
+margin:15px;
+}
+
+a{
+color:cyan;
+}
+.back-btn{
+display:inline-block;
+margin:20px;
+padding:12px 25px;
+background:linear-gradient(90deg,#00ffff,#008cff);
+color:white;
+text-decoration:none;
+border-radius:30px;
+font-weight:bold;
+box-shadow:0 0 15px #00ffff;
+transition:.3s;
+}
+
+.back-btn:hover{
+transform:translateY(-4px);
+box-shadow:0 0 30px #00ffff;
+}
+
+.video-card{
+margin:30px auto;
+max-width:700px;
+padding:20px;
+background:#111827;
+border-radius:20px;
+border:1px solid cyan;
+}
+
+.action-bar{
+display:flex;
+justify-content:space-between;
+margin-top:15px;
+}
+
+.like-btn{
+background:cyan;
+border:none;
+padding:10px 20px;
+border-radius:30px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.views{
+color:cyan;
+font-size:18px;
+}
+
+.comment-box{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.comment-box input{
+flex:1;
+padding:10px;
+background:#1e293b;
+border:none;
+border-radius:10px;
+color:white;
+}
+
+.comment-box button{
+padding:10px 20px;
+background:cyan;
+border:none;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.comments{
+margin-top:15px;
+}
+
+.comment{
+background:#1e293b;
+padding:10px;
+border-radius:10px;
+margin-bottom:10px;
+}
+
+</style>
+
+</head>
+<body>
+
+<h1>My Videos</h1>
+
+<a href="index.html" class="back-btn">
+⬅ Back Home
+</a>
+
+<div class="video" id="videos"></div>
+<script>
+
+if(localStorage.getItem("loggedIn")!="true"){
+window.location.href="login.html";
+}
+
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+query,
+orderBy,
+doc,
+updateDoc,
+increment,
+addDoc,
+serverTimestamp,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+authDomain: "shidou-4f8b1.firebaseapp.com",
+projectId: "shidou-4f8b1",
+storageBucket: "shidou-4f8b1.firebasestorage.app",
+messagingSenderId: "242900244866",
+appId: "1:242900244866:web:b42bb244511b204288579b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const videos = document.getElementById("videos");
+window.likeMedia = async function(id){
+
+    await updateDoc(doc(db,"media",id),{
+        likes: increment(1)
+    });
+
+}
+
+window.sendComment = async function(id){
+
+    const input = document.getElementById("commentInput-"+id);
+
+    if(input.value.trim()=="") return;
+
+    await addDoc(
+        collection(db,"media",id,"comments"),
+        {
+            text: input.value,
+            createdAt: serverTimestamp()
+        }
+    );
+
+    input.value="";
+
+}
+
+async function addView(id){
+
+    await updateDoc(doc(db,"media",id),{
+        views: increment(1)
+    });
+
+}
+const q = query(
+collection(db,"media"),
+orderBy("createdAt","desc")
+);
+
+onSnapshot(q,(snap)=>{
+
+videos.innerHTML="";
+
+snap.forEach((doc)=>{
+
+const data = doc.data();
+
+if(data.type === "video"){
+
+const viewed = localStorage.getItem("video_"+doc.id);
+
+if(!viewed){
+
+    addView(doc.id);
+
+    localStorage.setItem("video_"+doc.id,"1");
+
+}
+
+videos.innerHTML += `
+
+<div class="video-card">
+
+<video
+controls
+preload="metadata">
+<source src="${data.url}" type="video/mp4">
+</video>
+
+<div class="action-bar">
+
+<button class="like-btn"
+onclick="likeMedia('${doc.id}')">
+
+❤️
+<span id="like-${doc.id}">
+${data.likes || 0}
+</span>
+
+</button>
+
+<div class="views">
+
+👁️
+<span id="view-${doc.id}">
+${data.views || 0}
+</span>
+
+</div>
+
+</div>
+
+<div class="comment-box">
+
+<input
+id="commentInput-${doc.id}"
+placeholder="Write a comment...">
+
+<button
+onclick="sendComment('${doc.id}')">
+
+Send
+
+</button>
+
+</div>
+
+<div
+id="comments-${doc.id}"
+class="comments">
+
+</div>
+
+</div>
+
+`;
+
+const commentBox =
+document.getElementById("comments-"+doc.id);
+
+const cq = query(
+collection(db,"media",doc.id,"comments"),
+orderBy("createdAt","desc")
+);
+
+onSnapshot(cq,(snap)=>{
+
+commentBox.innerHTML="";
+
+snap.forEach(c=>{
+
+commentBox.innerHTML += `
+<div class="comment">
+💬 ${c.data().text}
+</div>
+`;
+
+});
+
+});
+
+}
+
+});
+
+});
+</script>
+</body>
+</html>
