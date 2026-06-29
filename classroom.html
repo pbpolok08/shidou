@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Photo Gallery</title>
+
+<style>
+
+body{
+background:#0a0a0a;
+color:white;
+font-family:Segoe UI,sans-serif;
+text-align:center;
+margin:0;
+}
+
+header{
+padding:20px;
+background:black;
+}
+
+h1{
+font-size:50px;
+color:white;
+text-shadow:0 0 10px #00ffff,0 0 25px #00ffff;
+margin-bottom:20px;
+}
+
+.gallery{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:20px;
+padding:20px;
+max-width:1200px;
+margin:auto;
+}
+
+.gallery img{
+width:100%;
+height:300px;
+object-fit:cover;
+border-radius:15px;
+transition:.4s;
+cursor:pointer;
+box-shadow:0 0 10px rgba(0,255,255,.2);
+}
+
+.gallery img:hover{
+transform:scale(1.05);
+box-shadow:0 0 25px #00ffff;
+}
+
+.back-btn{
+display:inline-block;
+margin:20px;
+padding:12px 28px;
+background:linear-gradient(90deg,#00ffff,#008cff);
+color:white;
+text-decoration:none;
+border-radius:30px;
+font-weight:bold;
+box-shadow:0 0 15px #00ffff;
+transition:.3s;
+}
+
+.back-btn:hover{
+transform:translateY(-4px);
+box-shadow:0 0 30px #00ffff;
+}
+.download-btn{
+
+display:inline-block;
+
+margin-top:15px;
+
+padding:10px 20px;
+
+background:linear-gradient(90deg,#00ffff,#008cff);
+
+color:white;
+
+text-decoration:none;
+
+border-radius:30px;
+
+font-weight:bold;
+
+box-shadow:0 0 15px #00ffff;
+
+transition:.3s;
+
+}
+
+.download-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:0 0 30px #00ffff;
+
+}
+
+.action-bar{
+display:flex;
+justify-content:center;
+align-items:center;
+gap:12px;
+margin-top:15px;
+flex-wrap:wrap;
+}
+
+.action-btn{
+padding:10px 18px;
+background:linear-gradient(90deg,#00ffff,#008cff);
+color:white;
+text-decoration:none;
+border:none;
+border-radius:30px;
+cursor:pointer;
+font-weight:bold;
+box-shadow:0 0 15px #00ffff;
+transition:.3s;
+}
+
+.action-btn:hover{
+transform:translateY(-3px);
+box-shadow:0 0 30px #00ffff;
+}
+
+.views{
+font-size:18px;
+color:#00ffff;
+font-weight:bold;
+}
+
+</style>
+
+</head>
+<body>
+
+<header>
+<a href="index.html" class="back-btn">
+⬅ Back Home
+</a>
+</header>
+
+<h1>My Photo Gallery</h1>
+
+<div class="gallery" id="gallery"></div>
+
+<script>
+
+if(localStorage.getItem("loggedIn")!="true"){
+window.location.href="login.html";
+}
+
+</script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+doc,
+addDoc,
+updateDoc,
+increment,
+onSnapshot,
+query,
+orderBy,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+authDomain: "shidou-4f8b1.firebaseapp.com",
+projectId: "shidou-4f8b1",
+storageBucket: "shidou-4f8b1.firebasestorage.app",
+messagingSenderId: "242900244866",
+appId: "1:242900244866:web:b42bb244511b204288579b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.likePhoto = async function(id){
+
+    await updateDoc(doc(db,"media",id),{
+        likes: increment(1)
+    });
+
+}
+
+window.sendComment = async function(id){
+
+    const input=document.getElementById("comment-"+id);
+
+    if(input.value.trim()=="") return;
+
+    await addDoc(
+        collection(db,"media",id,"comments"),
+        {
+            text:input.value,
+            createdAt:serverTimestamp()
+        }
+    );
+
+    input.value="";
+
+}
+
+async function addView(id){
+
+    await updateDoc(doc(db,"media",id),{
+        views:increment(1)
+    });
+
+}
+
+const gallery = document.getElementById("gallery");
+
+onSnapshot(collection(db,"media"),(snap)=>{
+
+gallery.innerHTML="";
+
+snap.forEach((doc)=>{
+
+const data = doc.data();
+
+if(data.type==="photo"){
+
+const viewed=localStorage.getItem("photo_"+doc.id);
+
+if(!viewed){
+
+    addView(doc.id);
+
+    localStorage.setItem("photo_"+doc.id,"1");
+
+}
+
+const card=document.createElement("div");
+
+card.innerHTML=`
+
+<img src="${data.url}" onclick="window.open('${data.url}','_blank')">
+
+<div class="action-bar">
+
+<button class="action-btn"
+onclick="likePhoto('${doc.id}')">
+❤️ ${data.likes || 0}
+</button>
+
+<a href="${data.url}"
+download
+class="action-btn">
+📥 Download
+</a>
+
+<button class="action-btn"
+onclick="sharePhoto('${data.url}')">
+🔗 Share
+</button>
+
+<span class="views">
+👁️ ${data.views || 0}
+</span>
+
+</div>
+
+<div style="margin-top:15px">
+
+<input
+id="comment-${doc.id}"
+placeholder="Write comment...">
+
+<button onclick="sendComment('${doc.id}')">
+Send
+</button>
+
+</div>
+
+<div id="comments-${doc.id}"></div>
+
+`;
+
+gallery.appendChild(card);
+
+const commentBox=document.getElementById("comments-"+doc.id);
+
+const cq=query(
+collection(db,"media",doc.id,"comments"),
+orderBy("createdAt","desc")
+);
+
+onSnapshot(cq,(snap)=>{
+
+commentBox.innerHTML="";
+
+snap.forEach(c=>{
+
+commentBox.innerHTML+=`
+<div style="background:#222;padding:8px;margin-top:5px;border-radius:8px;">
+💬 ${c.data().text}
+</div>
+`;
+
+});
+
+});
+
+}
+
+});
+
+});
+
+window.sharePhoto = function(url){
+
+if(navigator.share){
+
+navigator.share({
+title:"Polok Gallery",
+url:url
+});
+
+}else{
+
+navigator.clipboard.writeText(url);
+
+alert("✅ Link Copied");
+
+}
+
+}
+
+</script>
+
+</body>
+</html>

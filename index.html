@@ -1,894 +1,610 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Polok Gallery</title>
 
-<style>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polok Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
-}
-
-body{
-background:linear-gradient(-45deg,#464040,#001f2f,#000814,#001f2f);
-background-size:400% 400%;
-animation:bgMove 10s ease infinite;
-}
-
-@keyframes bgMove{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 8%;
-background:rgba(26, 22, 22, 0.9);
-backdrop-filter:blur(12px);
-border-bottom:1px solid #222;
-position:fixed;
-width:100%;
-top:0;
-z-index:100;
-}
-
-.logo{
-font-size:32px;
-font-weight:bold;
-color:#00ffff;
-text-shadow:0 0 15px #00ffff;
-}
-#loader{
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:#000;
-display:flex;
-justify-content:center;
-align-items:center;
-z-index:99999;
-transition:opacity .5s ease, visibility .5s ease;
-}
-
-#loader h1{
-color:#00ffff;
-text-shadow:0 0 20px #00ffff;
-}
-
-.loader-box{
-text-align:center;
-}
-
-.spinner{
-width:70px;
-height:70px;
-border:6px solid rgba(255,255,255,.2);
-border-top:6px solid #00ffff;
-border-radius:50%;
-margin:0 auto 20px;
-animation:spin 1s linear infinite;
-}
-
-
-
-#loader h1{
-color:#00ffff;
-font-size:40px;
-text-shadow:0 0 20px #00ffff;
-animation:pulse 1.2s infinite;
-}
-
-@keyframes pulse{
-0%,100%{
-opacity:1;
-}
-50%{
-opacity:.4;
-}
-}
-
-.menu a{
-color:white;
-text-decoration:none;
-margin-left:25px;
-position:relative;
-}
-
-.menu a::after{
-content:'';
-position:absolute;
-left:0;
-bottom:-5px;
-width:0;
-height:2px;
-background:#00ffff;
-transition:.3s;
-}
-
-.menu a:hover::after{
-width:100%;
-}
-
-
-.hero{
-    min-height:100vh;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding-top:100px;
-}
-
-.hero h1{
-font-size:4rem;
-animation:glow 2s ease-in-out infinite alternate;
-}
-
-@keyframes glow{
-from{
-text-shadow:0 0 10px #00ffff;
-}
-to{
-text-shadow:
-0 0 20px #00ffff,
-0 0 40px #00ffff,
-0 0 60px #00ffff;
-}
-}
-
-.hero p{
-font-size:1.2rem;
-color:#ccc;
-animation:fade 2s infinite alternate;
-}
-
-@keyframes fade{
-from{opacity:.5;}
-to{opacity:1;}
-}
-
-.btn{
-margin-top:25px;
-padding:15px 35px;
-border:none;
-border-radius:50px;
-background:linear-gradient(90deg,#00ffff,#008cff);
-color:white;
-font-size:18px;
-cursor:pointer;
-box-shadow:0 0 25px rgba(0,255,255,.5);
-transition:.3s;
-animation:float 2s ease-in-out infinite;
-}.btn{
-display:inline-block;
-text-decoration:none;
-}
-
-
-.btn:hover{
-color:white;
-}
-
-.btn:hover{
-box-shadow:0 0 35px rgba(0,255,255,.9);
-transform:translateY(-12px) scale(1.05);
-}
-/* Back Home Button */
-.back-btn{
-display:inline-block;
-margin:20px;
-padding:12px 25px;
-background:linear-gradient(90deg,#00ffff,#008cff);
-color:white;
-text-decoration:none;
-border-radius:30px;
-box-shadow:0 0 15px #00ffff;
-transition:.3s;
-}
-
-.back-btn:hover{
-transform:translateY(-3px);
-box-shadow:0 0 25px #00ffff;
-}
-
-/* Upload Button */
-input[type="file"]{
-padding:10px;
-color:white;
-background:#927070;
-border:1px solid #00ffff;
-border-radius:10px;
-cursor:pointer;
-margin:20px 0;
-}
-
-input[type="file"]::-webkit-file-upload-button{
-background:linear-gradient(90deg,#00ffff,#008cff);
-border:none;
-padding:10px 20px;
-color:white;
-border-radius:8px;
-cursor:pointer;
-margin-right:10px;
-}
-
-.search-container{
-width:380px;
-max-width:90%;
-margin:35px auto;
-position:relative;
-}
-
-#searchInput{
-width:100%;
-padding:15px;
-font-size:18px;
-border:none;
-outline:none;
-border-radius:40px;
-background:#111;
-color:white;
-border:2px solid #00ffff;
-box-shadow:0 0 15px #00ffff;
-}
-
-#searchResults{
-display:none;
-position:absolute;
-width:100%;
-background:#111;
-border-radius:15px;
-margin-top:8px;
-overflow:hidden;
-box-shadow:0 0 20px #00ffff;
-z-index:999;
-}
-
-#searchResults a{
-display:block;
-padding:15px;
-color:white;
-text-decoration:none;
-border-bottom:1px solid #222;
-transition:.3s;
-}
-
-#searchResults a:hover{
-background:#00ffff;
-color:black;
-}
-
-.thumb{
-width:80px;
-height:60px;
-object-fit:cover;
-border-radius:10px;
-margin-right:15px;
-}
-
-.result{
-display:flex;
-align-items:center;
-padding:12px;
-text-decoration:none;
-color:white;
-border-bottom:1px solid #333;
-transition:.3s;
-}
-
-.result:hover{
-background:#00ffff;
-color:black;
-}
-
-.info h4{
-margin:0;
-font-size:18px;
-}
-
-
-
-
-.info p{
-margin:5px 0;
-font-size:14px;
-color:#bbb;
-}
-
-.info small{
-color:orange;
-font-weight:bold;
-}
-
-.profile{
-padding:80px 20px;
-text-align:center;
-background:#0e0101;
-}
-.profile p{
-color:white;
-font-size:18px;
-}
-.profile-pic{
-width:120px;
-height:120px;
-border-radius:50%;
-border:3px solid #00ffff;
-box-shadow:0 0 20px #00ffff;
-margin-bottom:20px;
-object-fit:cover;
-}
-.profile h2{
-color:#00ffff;
-margin-bottom:15px;
-}
-
-.card{
-margin:40px auto;
-padding:25px;
-background:#650483;
-border:1px solid #025f4b;
-border-radius:15px;
-width:320px;
-}
-.card{
-transition:.3s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-box-shadow:0 0 25px rgba(0,255,255,.4);
-}
-.card a{
-color:#00ffff;
-text-decoration:none;
-}
-
-.footer{
-    background:rgba(163, 223, 114, 0.918);
-    padding:20px;
-    text-align:center;
-    border-top:1px solid #463333;
-}
-
-@keyframes float{
-    0%{
-        transform:translateY(0);
-        box-shadow:0 0 20px #00ffff;
-    }
-
-    50%{
-        transform:translateY(-12px);
-        box-shadow:0 0 40px #00ffff;
-    }
-
-    100%{
-        transform:translateY(0);
-        box-shadow:0 0 20px #00ffff;
-    }
-}
-
-.badge{
-margin-top:25px;
-padding:8px 20px;
-border:1px solid #00ffff;
-border-radius:25px;
-display:inline-block;
-color:#00ffff;
-background:rgba(0,255,255,.08);
-box-shadow:0 0 10px rgba(4, 70, 70, 0.3);
-font-weight:bold;
-}
-.top-badge{
-padding:10px 20px;
-border:1px solid #00ffff;
-border-radius:30px;
-color:#00ffff;
-box-shadow:0 0 15px #00ffff;
-margin-bottom:20px;
-}
-.btn{
-display:inline-block;
-text-decoration:none;
-}
-
-.buttons{
-display:flex;
-flex-wrap:wrap;
-justify-content:center;
-align-items:center;
-gap:20px;
-}
-
-.search-container{
-    width:380px;
-    max-width:90%;
-    margin:20px auto 35px;
-    position:relative;
-    z-index:9999;
-}
-
-#searchInput{
-width:100%;
-padding:15px 20px;
-border-radius:40px;
-background:#111;
-border:2px solid #00ffff;
-color:white;
-font-size:17px;
-outline:none;
-box-shadow:0 0 15px #00ffff;
-}
-
-.result{
-display:flex;
-align-items:center;
-padding:15px;
-color:white;
-text-decoration:none;
-transition:.3s;
-}
-
-.result:hover{
-background:#00ffff;
-color:black;
-}
-
-.no-result{
-padding:15px;
-color:#ff5555;
-text-align:center;
-}
-
-@media(max-width:768px){
-
-.hero h1{
-    font-size:2.5rem;
-}
-
-.menu a{
-    margin-left:12px;
-    font-size:14px;
-}
-
-.logo{
-    font-size:24px;
-}
-
-.card{
-    width:90%;
-}
-
-}
-
-
-.menu a{
-margin-left:12px;
-font-size:14px;
-}
-
-.logo{
-font-size:24px;
-}
-
-.card{
-width:90%;
-}
-
-
-.social-links{
-    margin-top:30px;
-    display:flex;
-    justify-content:center;
-    gap:20px;
-}
-
-.social-links a{
-    width:60px;
-    height:60px;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-decoration:none;
-    color:#00ffff;
-    font-size:26px;
-
-    background:rgba(53, 37, 37, 0.753);
-    border:2px solid #00ffff;
-    border-radius:50%;
-
-    box-shadow:
-    0 0 10px #00ffff,
-    0 0 20px rgba(0,255,255,.5);
-
-    transition:.4s;
-}
-
-.social-links a:hover{
-    color:white;
-
-    transform:
-    translateY(-8px)
-    scale(1.15)
-    rotate(360deg);
-
-    box-shadow:
-    0 0 20px #00ffff,
-    0 0 40px #00ffff,
-    0 0 60px #00ffff;
-}
-.stats{
-display:flex;
-justify-content:center;
-gap:50px;
-padding:40px;
-text-align:center;
-flex-wrap:wrap;
-}
-
-.stats h2{
-color:#00ffff;
-font-size:35px;
-}
-.stats p{
-color:white;
-font-size:15px;
-font-weight:bold;
-}
-
-
-
-
-@keyframes spin{
-100%{
-transform:rotate(360deg);
-}
-}
-
-</style>
-
+    
 </head>
-
 <body>
+<div class="glow-ball ball1"></div>
+
+<div class="glow-ball ball2"></div>
+
+<div class="glow-ball ball3"></div>
+
+
+    <video id="bgVideo" autoplay muted loop playsinline>
+        <source src="background.mp4" type="video/mp4">
+    </video>
+
+    <div id="progressBar"></div>
+
     <div id="loader">
-    <div class="loader-box">
-        <div class="spinner"></div>
-        <h1>POLOK GALLERY</h1>
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <h1>POLOK GALLERY</h1>
+        </div>
     </div>
-</div>
 
-
-<nav>
+    <nav class="navbar">
 
 <div class="logo">
-<img src="profile.jpg" width="45"
-style="border-radius:50%;vertical-align:middle;margin-right:10px;">
-POLOK
+<img src="profile.jpg">
+<h2>POLOK <span>GALLERY</span></h2>
 </div>
 
-<div class="menu">
-<a href="index.html">Home</a>
-<a href="gallery.html">Gallery</a>
-<a href="videos.html">Videos</a>
-<a href="about.html">About</a>
-<a href="news.html">News</a>
+<ul class="nav-links">
 
+<li><a href="index.html" class="active">Home</a></li>
+<li><a href="gallery.html">Gallery</a></li>
+<li><a href="videos.html">Videos</a></li>
+<li><a href="news.html">News</a></li>
+<li><a href="about.html">About</a></li>
 
-<a href="#" onclick="logout()">Logout</a>
+</ul>
+
+<div class="nav-right">
+
+<i class="fas fa-search"></i>
+
+<i class="fas fa-bell"></i>
+
+<a href="#" onclick="logout()" class="logout-btn">Logout</a>
+
 </div>
 
 </nav>
 
+
+
 <section class="hero">
-    <p class="top-badge">🔥 Official Polok Gallery</p>
 
-    <h1>Welcome To My Gallery</h1>
+<div class="hero-slider">
 
-    <p>Photos • Videos • Memories • Dark Edition</p>
+<div class="slide active" style="background-image:url('banner1.jpg')"></div>
 
-    
+<div class="slide" style="background-image:url('banner2.jpg')"></div>
 
-<!-- Search Bar -->
-<div class="search-container">
-
-<input
-type="text"
-id="searchInput"
-placeholder="🔍 Search..."
-onkeyup="searchPages()"
-autocomplete="off">
-
-<div id="searchResults"></div>
+<div class="slide" style="background-image:url('banner3.jpg')"></div>
 
 </div>
 
-<!-- Buttons -->
-<div class="buttons">
+<div class="overlay"></div>
 
-<a href="gallery.html" class="btn">
-Explore Gallery
+<div class="hero-content">
+
+<div class="badge">
+WELCOME TO
+</div>
+
+<h1>
+
+<span>POLOK</span> GALLERY
+
+</h1>
+
+<p>
+
+Photos, Videos, Memories and Stories.
+
+</p>
+
+<p>
+
+Enable Desktop Mode For Better Experience.
+
+</p>
+
+<div class="hero-buttons">
+
+<a href="gallery.html" class="primary-btn">
+📷 Explore Gallery
 </a>
 
-<a href="videos.html" class="btn">
-🎥 Explore Videos
+<a href="videos.html" class="secondary-btn">
+▶ Watch Videos
 </a>
 
-<a href="news.html" class="btn">
+<a href="news.html" class="secondary-btn">
 📰 News
 </a>
 
 </div>
 
-    <div class="social-links">
+</div>
 
-        <a href="https://facebook.com/pb.polok.08" target="_blank">
-            <i class="fab fa-facebook-f"></i>
-        </a>
 
-        <a href="https://instagram.com/shidou.zxr" target="_blank">
-            <i class="fab fa-instagram"></i>
-        </a>
 
-        <a href="https://youtube.com/@PolokEditX" target="_blank">
-            <i class="fab fa-youtube"></i>
-        </a>
+</section>
 
-        <a href="https://tiktok.com/@pb_polok" target="_blank">
-            <i class="fab fa-tiktok"></i>
-        </a>
+<section class="stats-section reveal">
+
+<div class="stats-grid">
+
+<div class="mini-card cyan">
+<i class="fas fa-camera"></i>
+
+<div>
+<h2>250+</h2>
+<p>Photos</p>
+</div>
+
+</div>
+
+<div class="mini-card purple">
+<i class="fas fa-video"></i>
+
+<div>
+<h2>80+</h2>
+<p>Videos</p>
+</div>
+
+</div>
+
+<div class="mini-card yellow">
+<i class="fas fa-newspaper"></i>
+
+<div>
+<h2>30+</h2>
+<p>News</p>
+</div>
+
+</div>
+
+<div class="mini-card pink">
+<i class="far fa-heart"></i>
+
+<div>
+<h2>600+</h2>
+<p>Memories</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+
+<section class="memory-gallery reveal">
+
+<div class="gallery-header">
+
+<div class="gallery-icon">
+<i class="fas fa-camera"></i>
+</div>
+
+<h2>Memory Gallery</h2>
+
+<p>
+Relive unforgettable moments from the HSC 27K Batch journey
+</p>
+
+</div>
+
+<div class="gallery-filter">
+
+<a href="gallery.html" class="filter-btn active">All</a>
+
+<a href="classroom.html" class="filter-btn">Classroom Moments</a>
+
+<a href="group-study.html" class="filter-btn">Group Study</a>
+
+<a href="farewell.html" class="filter-btn">Farewell</a>
+
+<a href="result-day.html" class="filter-btn">Result Day</a>
+
+<a href="picnic.html" class="filter-btn">Picnic</a>
+
+<a href="funny.html" class="filter-btn">Funny Moments</a>
+
+<a href="teachers.html" class="filter-btn">Teachers & Mentors</a>
+
+</div>
+
+
+<div class="gallery-grid">
+
+<div class="gallery-card">
+<img src="gallery1.1.jpg">
+</div>
+
+<div class="gallery-card">
+<img src="gallery1.2.jpg">
+</div>
+
+<div class="gallery-card">
+<img src="gallery1.3.jpg">
+</div>
+
+<div class="gallery-card">
+<img src="gallery1.4.jpg">
+</div>
+
+<div class="gallery-card">
+<img src="gallery1.5.jpg">
+</div>
+
+<div class="gallery-card">
+<img src="gallery1.6.jpg">
+</div>
+
+</div>
+
+</section>
+<section class="home-panels reveal">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h3>Latest Videos</h3>
+            <a href="videos.html">View All</a>
+        </div>
+
+        <div class="video-list">
+
+            <div class="video-item">
+                <img src="thumb1.jpg">
+                <div>
+                    <h4>HSC 27K Farewell</h4>
+                    <p>2.4K Views • 2 Days Ago</p>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <img src="thumb2.jpg">
+                <div>
+                    <h4>Picnic Memories</h4>
+                    <p>1.8K Views • 5 Days Ago</p>
+                </div>
+            </div>
+
+            <div class="video-item">
+                <img src="thumb3.jpg">
+                <div>
+                    <h4>Iftar Party</h4>
+                    <p>1.2K Views • 1 Week Ago</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h3>Latest Photos</h3>
+            <a href="gallery.html">View All</a>
+        </div>
+
+        <div class="photo-grid">
+
+            <img src="gallery1.jpg">
+            <img src="gallery2.jpg">
+            <img src="gallery3.jpg">
+            <img src="gallery4.jpg">
+            <img src="gallery5.jpg">
+            <img src="gallery6.jpg">
+            <img src="gallery1.jpg">
+            <img src="gallery2.jpg">
+            <img src="gallery3.jpg">
+
+        </div>
+
+    </div>
+
+
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h3>Latest News</h3>
+            <a href="news.html">View All</a>
+        </div>
+
+        <div class="news-list">
+
+            <div class="news-item">
+                <img src="gallery2.1.jpg">
+                <div>
+                    <h4>HSC 27K Reunion Completed</h4>
+                    <p>May 20, 2025</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="gallery2.2.jpg">
+                <div>
+                    <h4>Annual Picnic 2K25</h4>
+                    <p>May 18, 2025</p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <img src="gallery2.3.jpg">
+                <div>
+                    <h4>Iftar Party 2K25</h4>
+                    <p>May 15, 2025</p>
+                </div>
+            </div>
+
+        </div>
 
     </div>
 
 </section>
 
-<section class="profile">
-<img src="profile.jpg" class="profile-pic">
-<h2>About Me</h2>
-
-<p>Hello! I'm Polok. Welcome to my personal gallery website.</p>
-
-<div class="card">
-<h3>Featured Video</h3>
-<p>Watch my latest upload</p>
-<br>
-<a href="videos.html">Watch Now →</a>
-</div>
-
-</section>
-<section class="stats">
-
-<div>
-<h2>50+</h2>
-<p>Photos</p>
-</div>
-
-<div>
-<h2>20+</h2>
-<p>Videos</p>
-</div>
-
-<div>
-<h2>100%</h2>
-<p>Creativity</p>
-</div>
-
-</section>
-
-<div class="footer">
-
-© 2025 Polok Gallery
-
-<br><br>
-
-Made With ❤️ By Polok
-
-</div>
-
-</div>
-<script>
-
-if(localStorage.getItem("loggedIn")!="true"){
-    window.location.href="login.html";
-}
-
-const loader = document.getElementById("loader");
-
-if (loader) {
-    window.addEventListener("load", () => {
-        loader.style.opacity = "0";
-        loader.style.visibility = "hidden";
-
-        setTimeout(() => loader.remove(), 500);
-    });
-
-    setTimeout(() => {
-        if (document.body.contains(loader)) {
-            loader.style.opacity = "0";
-            loader.style.visibility = "hidden";
-
-            setTimeout(() => loader.remove(), 500);
-        }
-    }, 5000);
-}
-
-</script>
     
-    <script>
+    
+       <section class="content-section">
 
+<h2 class="section-heading">🔥 Latest Updates</h2>
 
-function logout(){
-localStorage.removeItem("loggedIn");
-window.location.href="login.html";
-}
+<div class="content-grid">
 
-let timer;
+<div class="content-card">
+    <img src="latest-video.jpg" alt="Latest Video">
 
-function resetTimer(){
+<div class="content-info">
+<span class="tag video">VIDEO</span>
+<h3>Latest Video</h3>
+<p>Watch the newest uploaded video.</p>
+<a href="videos.html">View →</a>
+</div>
+</div>
 
-clearTimeout(timer);
+<div class="content-card">
+    <img src="latest-photo.jpg" alt="Latest Photo">
 
-timer = setTimeout(function(){
+<div class="content-info">
+<span class="tag photo">PHOTO</span>
+<h3>Latest Photo</h3>
+<p>See the newest gallery collection.</p>
+<a href="gallery.html">View →</a>
+</div>
+</div>
 
-localStorage.removeItem("loggedIn");
-alert("Logged out due to inactivity");
-window.location.href="login.html";
+<div class="content-card">
+    <img src="latest-news.jpg" alt="Latest News">
 
-},300000);
-
-}
-
-document.addEventListener("mousemove",resetTimer);
-document.addEventListener("keypress",resetTimer);
-document.addEventListener("click",resetTimer);
-
-resetTimer();
-</script>
-
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import {
-getFirestore,
-collection,
-getDocs
-} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-
-const firebaseConfig={
-apiKey:"AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
-authDomain:"shidou-4f8b1.firebaseapp.com",
-projectId:"shidou-4f8b1",
-storageBucket:"shidou-4f8b1.firebasestorage.app",
-messagingSenderId:"242900244866",
-appId:"1:242900244866:web:b42bb244511b204288579b"
-};
-
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
-
-let contents=[];
-
-async function loadSearch(){
-
-const snap=await getDocs(collection(db,"news"));
-
-contents=[];
-
-snap.forEach(doc=>{
-
-const data=doc.data();
-
-contents.push({
-
-title:data.title || "",
-description:data.description || "",
-image:data.images?.[0] || "profile.jpg",
-type:data.videos?.length ? "Video" : "News",
-url:"news.html?id="+doc.id
-
-});
-
-});
-
-}
-
-await loadSearch();
-
-console.log(contents);
-
-window.searchPages=function(){
-
-const input=document.getElementById("searchInput").value.toLowerCase();
-
-const results=document.getElementById("searchResults");
-
-results.innerHTML="";
-
-if(input===""){
-
-results.style.display="none";
-return;
-
-}
-
-let found=false;
-
-contents.forEach(item=>{
-
-if(
-item.title.toLowerCase().includes(input) ||
-item.description.toLowerCase().includes(input)
-){
-
-found=true;
-
-results.innerHTML+=`
-
-<a href="${item.url}" class="result">
-
-<img src="${item.image}" class="thumb">
-
-<div class="info">
-
-<h4>${item.title}</h4>
-
-<p>${item.description}</p>
-
-<small>${item.type}</small>
+<div class="content-info">
+<span class="tag news">NEWS</span>
+<h3>Latest News</h3>
+<p>Read the newest announcement.</p>
+<a href="news.html">Read →</a>
+</div>
+</div>
 
 </div>
 
-</a>
-
-`;
-
-}
-
-});
-
-if(!found){
-
-results.innerHTML="<div class='no-result'>❌ No Result Found</div>";
-
-}
-
-results.style.display="block";
-
-};
-
-document.getElementById("searchInput").addEventListener("keydown",e=>{
-
-if(e.key==="Enter"){
-
-const first=document.querySelector("#searchResults a");
-
-if(first){
-
-window.location=first.href;
-
-}
-
-}
-
-});
+</section>
 
 
+    <section class="profile">
+        <img src="profile.jpg" class="profile-pic">
+        <h2>About Me</h2>
+        <p>Hello! I'm Polok. Welcome to my personal gallery website.</p>
+        <div class="card">
+            <h3>Featured Video</h3>
+            <p>Watch my latest upload</p><br>
+            <a href="videos.html">Watch Now →</a>
+        </div>
+    </section>
 
+    <section class="stats">
+        <div><h2>50+</h2><p>Photos</p></div>
+        <div><h2>20+</h2><p>Videos</p></div>
+        <div><h2>100%</h2><p>Creativity</p></div>
+    </section>
 
+    <section class="latest-videos">
+      
+        <div class="video-grid" id="latestVideos"></div>
+    </section>
 
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-box">
+                <div class="footer-logo">
+                    <img src="profile.jpg">
+                    <h2>POLOK <span>GALLERY</span></h2>
+                </div>
+                <p>Photos, Videos, Memories and Stories. Capturing moments, creating memories.</p>
+                <div class="social-icons">
+                    <a href="https://facebook.com/pb.polok.08"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://instagram.com/shidou.zxr"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com/@PolokEditX"><i class="fab fa-youtube"></i></a>
+                    <a href="https://tiktok.com/@pb_polok"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-box">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Gallery</a></li>
+                    <li><a href="videos.html">Videos</a></li>
+                    <li><a href="news.html">News</a></li>
+                    <li><a href="about.html">About</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-box">
+                <h3>Categories</h3>
+                <ul>
+                    <li>Photos</li>
+                    <li>Videos</li>
+                    <li>Nature</li>
+                    <li>Anime Edit</li>
+                    <li>News</li>
+                </ul>
+            </div>
+
+            <div class="footer-box">
+                <h3>Contact</h3>
+                <ul>
+                    <li><i class="fas fa-envelope"></i> polok4757@gmail.com</li>
+                    <li><i class="fab fa-whatsapp"></i> 01309071151</li>
+                    <li><i class="fas fa-map-marker-alt"></i> Bangladesh</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <div class="developer">
+            <p>DESIGNED & DEVELOPED BY</p>
+            <h2>Polok</h2>
+            <span>
+                <i class="fas fa-envelope"></i> polok4757@gmail.com | 
+                <i class="fab fa-whatsapp"></i> 01309071151
+            </span>
+        </div>
+        <div class="copyright">
+            © 2025 Polok Gallery. All Rights Reserved ❤️
+        </div>
+    </footer>
+
+    <button id="topBtn"><i class="fas fa-arrow-up"></i></button>
+
+    
+    <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+        authDomain: "shidou-4f8b1.firebaseapp.com",
+        projectId: "shidou-4f8b1",
+        storageBucket: "shidou-4f8b1.firebasestorage.app",
+        messagingSenderId: "242900244866",
+        appId: "1:242900244866:web:b42bb244511b204288579b"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    let contents = [];
+
+    // ফায়ারবেস থেকে নিউজ ডাটা লোড করে সার্চ অ্যারেতে রাখা
+    async function loadSearch(){
+        try {
+            const snap = await getDocs(collection(db, "news"));
+            contents = [];
+            snap.forEach(doc => {
+                const data = doc.data();
+                contents.push({
+                    title: data.title || "",
+                    description: data.description || "",
+                    image: data.image || data.images?.[0] || "profile.jpg",
+                    type: data.videos?.length ? "Video" : "News",
+                    url: "news.html?id=" + doc.id
+                });
+            });
+            console.log("Search Data Loaded:", contents);
+        } catch(e) { 
+            console.error("Search Loading Error: ", e); 
+        }
+    }
+
+    // ফায়ারবেস থেকে ভিডিও ডাটা লোড করা
+    async function loadLatestVideos(){
+        try {
+            const snap = await getDocs(collection(db, "videos"));
+            const container = document.getElementById("latestVideos");
+            if(!container) return;
+            container.innerHTML = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                container.innerHTML += `
+                    <div class="video-card">
+                        <img src="${data.thumbnail || 'banner1.jpg'}">
+                        <div class="play-btn"><i class="fas fa-play"></i></div>
+                        <div class="video-info">
+                            <h3>${data.title || 'Untitled'}</h3>
+                            <p>${data.description || ""}</p>
+                        </div>
+                    </div>`;
+            });
+        } catch(e) { 
+            console.error("Video Loading Error: ", e); 
+        }
+    }
+
+    // গ্লোবাল সার্চ ফাংশন (যা input এর onkeyup থেকে কল হবে)
+    window.searchPages = function(){
+        const input = document.getElementById("searchInput").value.trim().toLowerCase();
+        const results = document.getElementById("searchResults");
+        
+        if(!results) return;
+        results.innerHTML = "";
+
+        if(input === ""){
+            results.style.display = "none";
+            return;
+        }
+
+        let found = false;
+        
+        contents.forEach(item => {
+            const titleLower = item.title.toLowerCase();
+            const descLower = item.description.toLowerCase();
+
+            // কন্ডিশন: টাইটেল বা ডেসক্রিপশনে "test" থাকলে তা স্কিপ (Skip) করবে
+            if (titleLower.includes("test") || descLower.includes("test")) {
+                return; // এই আইটেমটি দেখাবে না, পরেরটায় চলে যাবে
+            }
+
+            // ইউজার যা সার্চ করেছে তা মিললে রেজাল্ট তৈরি করবে
+            if(titleLower.includes(input) || descLower.includes(input)){
+                found = true;
+                results.innerHTML += `
+                    <a href="${item.url}" class="result">
+                        <img src="${item.image}" class="thumb">
+                        <div class="info">
+                            <h4>${item.title}</h4>
+                            <p>${item.description.substring(0, 50)}...</p>
+                            <small>${item.type}</small>
+                        </div>
+                    </a>`;
+            }
+        });
+
+        if(!found){
+            results.innerHTML = "<div class='no-result'>❌ No Result Found</div>";
+        }
+        
+        results.style.display = "block";
+    };
+
+    // এন্টার চাপলে যেন প্রথম লিংকে চলে যায়
+    const sInput = document.getElementById("searchInput");
+    if(sInput) {
+        sInput.addEventListener("keydown", e => {
+            if(e.key === "Enter"){
+                const first = document.querySelector("#searchResults a");
+                if(first) window.location = first.href;
+            }
+        });
+    }
+
+    // পেজ লোড হওয়ার সাথে সাথে ডাটা কল করার ইভেন্ট (যা মিসিং ছিল)
+    window.addEventListener("DOMContentLoaded", async () => {
+        await loadSearch();
+        await loadLatestVideos();
+    });
 </script>
+<script type="module" src="script.js"></script>
+
+
+
 
 </body>
-</html>       
+</html>
