@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Gallery</title>
+
+<style>
+:root {
+    --neon-cyan: #00ffff;
+    --neon-blue: #008cff;
+    --pure-black: #0a0a0f;
+}
+
+body {
+    background: var(--pure-black);
+    color: white;
+    font-family: 'Segoe UI', Roboto, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    padding: 20px;
+    background: #000000;
+    display: flex;
+    justify-content: flex-start;
+}
+
+h1 {
+    font-size: clamp(32px, 5vw, 50px);
+    color: white;
+    text-shadow: 0 0 10px var(--neon-cyan), 0 0 25px var(--neon-cyan);
+    margin-bottom: 20px;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+.gallery > div {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 15px;
+    box-sizing: border-box;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    transition: transform 0.3s, border-color 0.3s;
+}
+
+.gallery > div:hover {
+    transform: translateY(-5px);
+    border-color: var(--neon-cyan);
+    box-shadow: 0 15px 30px rgba(0, 255, 255, 0.1);
+}
+
+.gallery img, .gallery video {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 15px;
+    transition: .4s;
+    box-shadow: 0 0 10px rgba(0,255,255,.2);
+}
+
+.gallery img:hover, .gallery video:hover {
+    box-shadow: 0 0 25px var(--neon-cyan);
+}
+
+.back-btn {
+    display: inline-block;
+    padding: 10px 22px;
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: 0.3s;
+}
+
+.back-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 20px white;
+}
+
+.action-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 15px;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 8px 12px;
+    border-radius: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.action-btn {
+    padding: 8px 14px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background: white;
+    color: black;
+    box-shadow: 0 0 15px white;
+}
+
+.views {
+    font-size: 14px;
+    color: var(--neon-cyan);
+    font-weight: bold;
+}
+
+.comment-box-container {
+    margin-top: 15px;
+    display: flex;
+    gap: 8px;
+}
+
+.comment-box-container input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 15px;
+    border-radius: 20px;
+    color: white;
+    outline: none;
+    font-size: 13px;
+}
+
+.comment-box-container input:focus {
+    border-color: var(--neon-cyan);
+}
+
+.comment-box-container button {
+    padding: 10px 18px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-blue));
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.comments-list {
+    margin-top: 12px;
+    max-height: 150px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.single-comment {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 8px 12px;
+    margin-top: 6px;
+    border-radius: 10px;
+    font-size: 13px;
+    border-left: 3px solid var(--neon-cyan);
+}
+</style>
+
+</head>
+<body>
+
+<header>
+<a href="index.html" class="back-btn">⬅ Back Home</a>
+</header>
+
+<h1>🌳 Picnic Gallery</h1>
+
+<div class="gallery" id="gallery"></div>
+
+<script>
+if(localStorage.getItem("loggedIn")!="true"){
+window.location.href="login.html";
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+getFirestore,
+collection,
+doc,
+addDoc,
+updateDoc,
+increment,
+onSnapshot,
+where,
+query,
+orderBy,
+serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+authDomain: "shidou-4f8b1.firebaseapp.com",
+projectId: "shidou-4f8b1",
+storageBucket: "shidou-4f8b1.firebasestorage.app",
+messagingSenderId: "242900244866",
+appId: "1:242900244866:web:b42bb244511b204288579b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.likeMedia = async function(id){
+    await updateDoc(doc(db,"media",id),{
+        likes: increment(1)
+    });
+}
+
+window.sendComment = async function(id){
+    const input=document.getElementById("comment-"+id);
+    if(input.value.trim()=="") return;
+
+    await addDoc(
+        collection(db,"media",id,"comments"),
+        {
+            text:input.value,
+            createdAt:serverTimestamp()
+        }
+    );
+    input.value="";
+}
+
+async function addView(id){
+    await updateDoc(doc(db,"media",id),{
+        views:increment(1)
+    });
+}
+
+// Fullscreen API function যা এলিমেন্টকে ফুল স্ক্রিন ভিউ দেয়
+window.activateFullscreen = function(elementId) {
+    const element = document.getElementById(elementId);
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) { /* Safari */
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { /* IE11 */
+        element.msRequestFullscreen();
+    }
+}
+
+const gallery = document.getElementById("gallery");
+
+const q = query(
+collection(db,"media"),
+where("category","==","classroom")
+);
+
+onSnapshot(q,(snap)=>{
+gallery.innerHTML="";
+snap.forEach((docItem)=>{
+const data = docItem.data();
+const docId = docItem.id;
+
+const viewed=localStorage.getItem("classroom_media_"+docId);
+if(!viewed){
+    addView(docId);
+    localStorage.setItem("classroom_media_"+docId,"1");
+}
+
+const card=document.createElement("div");
+
+let mediaHtml = "";
+if(data.type === "video") {
+    mediaHtml = `<video id="media-el-${docId}" src="${data.url}" controls playsinline></video>`;
+} else {
+    mediaHtml = `<img id="media-el-${docId}" src="${data.url}">`;
+}
+
+card.innerHTML=`
+${mediaHtml}
+
+<div class="action-bar">
+<button class="action-btn" onclick="likeMedia('${docId}')">
+❤️ ${data.likes || 0}
+</button>
+
+<button class="action-btn" onclick="activateFullscreen('media-el-${docId}')">
+⛶ Fullscreen
+</button>
+
+<a href="${data.url}" download class="action-btn">
+📥 Download
+</a>
+
+<button class="action-btn" onclick="shareMedia('${data.url}')">
+🔗 Share
+</button>
+
+<span class="views">
+👁️ ${data.views || 0}
+</span>
+</div>
+
+<div class="comment-box-container">
+<input id="comment-${docId}" placeholder="Write comment...">
+<button onclick="sendComment('${docId}')">Send</button>
+</div>
+
+<div class="comments-list" id="comments-${docId}"></div>
+`;
+
+gallery.appendChild(card);
+
+const commentBox=document.getElementById("comments-"+docId);
+const cq=query(
+collection(db,"media",docId,"comments"),
+orderBy("createdAt","desc")
+);
+
+onSnapshot(cq,(snap)=>{
+commentBox.innerHTML="";
+snap.forEach(c=>{
+commentBox.innerHTML+=`
+<div class="single-comment">
+💬 ${c.data().text}
+</div>
+`;
+});
+});
+
+});
+});
+
+window.shareMedia = function(url){
+if(navigator.share){
+navigator.share({
+title:"Classroom Gallery",
+url:url
+});
+}else{
+navigator.clipboard.writeText(url);
+alert("✅ Link Copied");
+}
+}
+</script>
+
+</body>
+</html>

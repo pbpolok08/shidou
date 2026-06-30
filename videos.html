@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Videos</title>
+
+<style>
+:root {
+    --neon-cyan: #00ffff;
+    --neon-blue: #008cff;
+    --bg-dark: #020204;
+    --glass-card: rgba(255, 255, 255, 0.01);
+}
+
+body {
+    background: radial-gradient(circle at 50% 0%, #0c102b 0%, var(--bg-dark) 80%);
+    color: #f5f5fa;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-align: center;
+}
+
+header {
+    padding: 16px;
+    display: flex;
+    justify-content: flex-start;
+    max-width: 1200px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+h1 {
+    font-size: clamp(26px, 5vw, 48px);
+    font-weight: 900;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, #ffffff 20%, var(--neon-cyan) 70%, var(--neon-blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 20px rgba(0, 255, 255, 0.3));
+    margin: 20px auto 10px auto;
+    padding: 0 16px;
+}
+
+.video {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    padding: 0 16px 40px 16px;
+    max-width: 1200px;
+    margin: auto;
+    box-sizing: border-box;
+}
+
+@media (max-width: 360px) {
+    .video {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 10X Premium Video Card Container */
+.video-card {
+    background: var(--glass-card);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border-radius: 24px;
+    padding: 14px;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.3, 1), border-color 0.4s;
+    text-align: left;
+}
+
+.video-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 24px;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), transparent, rgba(0, 255, 255, 0.05));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+}
+
+@media (hover: hover) {
+    .video-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(0, 255, 255, 0.3);
+        box-shadow: 0 20px 50px rgba(0, 255, 255, 0.15);
+    }
+}
+
+video {
+    width: 100%;
+    height: auto;
+    max-height: 240px;
+    object-fit: cover;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+    outline: none;
+    background: #000;
+}
+
+/* Title Container Area for View Count */
+.title-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 14px 4px 10px 4px;
+    gap: 10px;
+}
+
+.video-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+.views {
+    font-size: 12px;
+    color: var(--neon-cyan);
+    font-weight: 800;
+    white-space: nowrap;
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.4);
+}
+
+/* Ultra Responsive Action Bar */
+.action-bar {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 6px 12px;
+    border-radius: 40px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.btn-group {
+    display: flex;
+    gap: 6px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.btn-group::-webkit-scrollbar {
+    display: none; /* হাইড স্ক্রলবার */
+}
+
+.action-btn {
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #f5f5fa;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 40px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+}
+
+.action-btn:active {
+    background: #ffffff;
+    border-color: #ffffff;
+    color: #000000;
+}
+
+@media (hover: hover) {
+    .action-btn:hover {
+        background: #ffffff;
+        border-color: #ffffff;
+        color: #000000;
+    }
+}
+
+/* Mobile-Friendly Comment Area */
+.comment-box {
+    margin-top: 14px;
+    display: flex;
+    gap: 6px;
+}
+
+.comment-box input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 10px 14px;
+    border-radius: 40px;
+    color: #fff;
+    font-size: 12px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+.comment-box input:focus {
+    border-color: var(--neon-cyan);
+}
+
+.comment-box button {
+    padding: 10px 16px;
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-blue) 100%);
+    color: var(--bg-dark);
+    border: none;
+    border-radius: 40px;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.comment-box button:active {
+    transform: scale(0.96);
+}
+
+.comments {
+    margin-top: 12px;
+    max-height: 140px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 2px;
+}
+
+.comments::-webkit-scrollbar {
+    width: 2px;
+}
+.comments::-webkit-scrollbar-thumb {
+    background: var(--neon-cyan);
+}
+
+.comment {
+    background: rgba(255, 255, 255, 0.02);
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.4;
+    border-left: 2px solid var(--neon-cyan);
+    color: #cfcbd6;
+}
+
+/* Back Button Mobile Premium */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.02);
+    color: white;
+    text-decoration: none;
+    border-radius: 40px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.2s;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.back-btn:hover, .back-btn:active {
+    background: #ffffff;
+    color: #000000;
+}
+</style>
+
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="back-btn">
+        ⬅ Back Home
+    </a>
+</header>
+
+<h1>My Videos</h1>
+
+<div class="video" id="videos"></div>
+
+<script>
+if(localStorage.getItem("loggedIn")!="true"){
+    window.location.href="login.html";
+}
+</script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+getFirestore,
+collection,
+query,
+orderBy,
+doc,
+updateDoc,
+increment,
+addDoc,
+serverTimestamp,
+onSnapshot
+} from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+authDomain: "shidou-4f8b1.firebaseapp.com",
+projectId: "shidou-4f8b1",
+storageBucket: "shidou-4f8b1.firebasestorage.app",
+messagingSenderId: "242900244866",
+appId: "1:242900244866:web:b42bb244511b204288579b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const videosContainer = document.getElementById("videos");
+const activeCommentListeners = {};
+
+window.likeMedia = async function(id){
+    await updateDoc(doc(db,"media",id),{
+        likes: increment(1)
+    });
+}
+
+window.sendComment = async function(id){
+    const input = document.getElementById("commentInput-"+id);
+    if(input.value.trim()=="") return;
+
+    await addDoc(
+        collection(db,"media",id,"comments"),
+        {
+            text: input.value,
+            createdAt: serverTimestamp()
+        }
+    );
+    input.value="";
+}
+
+async function addView(id){
+    await updateDoc(doc(db,"media",id),{
+        views: increment(1)
+    });
+}
+
+window.activateFullscreen = function(elementId) {
+    const element = document.getElementById(elementId);
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+        element.msRequestFullscreen();
+    }
+}
+
+window.sharePhoto = function(url){
+    if(navigator.share){
+        navigator.share({
+            title:"Polok Gallery",
+            url:url
+        });
+    }else{
+        navigator.clipboard.writeText(url);
+        alert("✅ Link Copied");
+    }
+}
+
+function setupVideoCard(docId, data) {
+    const viewed = localStorage.getItem("video_"+docId);
+    if(!viewed){
+        addView(docId);
+        localStorage.setItem("video_"+docId,"1");
+    }
+
+    const card = document.createElement("div");
+    card.className = "video-card";
+    card.id = `card-${docId}`;
+    
+    card.innerHTML = `
+        <video id="video-el-${docId}" controls preload="metadata">
+            <source src="${data.url}" type="video/mp4">
+        </video>
+
+        <div class="title-container">
+            <h2 class="video-title">${data.title || "Untitled Video"}</h2>
+            <span class="views">👁️ ${data.views || 0}</span>
+        </div>
+
+        <div class="action-bar">
+            <div class="btn-group">
+                <button class="action-btn" onclick="likeMedia('${docId}')">
+                    ❤️ <span>${data.likes || 0}</span>
+                </button>
+                <button class="action-btn" onclick="activateFullscreen('video-el-${docId}')">
+                    ⛶ Full View
+                </button>
+                <a href="${data.url}" download class="action-btn">
+                    📥 Download
+                </a>
+                <button class="action-btn" onclick="sharePhoto('${data.url}')">
+                    🔗 Share
+                </button>
+            </div>
+        </div>
+
+        <div class="comment-box">
+            <input id="commentInput-${docId}" placeholder="Write a comment...">
+            <button onclick="sendComment('${docId}')">Send</button>
+        </div>
+
+        <div id="comments-${docId}" class="comments"></div>
+    `;
+
+    videosContainer.appendChild(card);
+
+    if (activeCommentListeners[docId]) {
+        activeCommentListeners[docId]();
+    }
+
+    const commentBox = card.querySelector(`#comments-${docId}`);
+    const cq = query(
+        collection(db,"media",docId,"comments"),
+        orderBy("createdAt","desc")
+    );
+
+    activeCommentListeners[docId] = onSnapshot(cq,(snap)=>{
+        commentBox.innerHTML="";
+        snap.forEach(c=>{
+            commentBox.innerHTML += `
+                <div class="comment">
+                    💬 ${c.data().text}
+                </div>
+            `;
+        });
+    });
+}
+
+const q = query(
+collection(db,"media"),
+orderBy("createdAt","desc")
+);
+
+onSnapshot(q,(snap)=>{
+    videosContainer.innerHTML="";
+    snap.forEach((doc)=>{
+        const data = doc.data();
+        if(data.type === "video"){
+            setupVideoCard(doc.id, data);
+        }
+    });
+});
+</script>
+
+</body>
+</html>

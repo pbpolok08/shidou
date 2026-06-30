@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔒 Polok Admin Panel</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --accent-cyan: #06b6d4;
+            --accent-yellow: #fbbf24;
+            --accent-pink: #ec4899;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: all 0.25s ease;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            font-family: 'Inter', 'Hind Siliguri', sans-serif;
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #22d3ee, #a5f3fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        h2 {
+            font-size: 1.4rem;
+            color: var(--text-main);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 10px;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background: var(--glass-border);
+            margin: 40px 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        input[type="email"],
+        input[type="password"],
+        input[type="text"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.15);
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+        input[type="file"]::file-selector-button {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 8px 16px;
+            margin-right: 15px;
+            cursor: pointer;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(6, 182, 212, 0.2);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(6, 182, 212, 0.4);
+        }
+
+        #logoutBtn {
+            background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            margin-top: 15px;
+        }
+
+        .login-box {
+            max-width: 400px;
+            margin: 40px auto;
+        }
+
+        .preview-box {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 14px;
+            border: 2px dashed var(--accent-cyan);
+            margin: 15px auto;
+            display: none;
+            object-fit: cover;
+        }
+
+        #mediaList, #newsList {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .media-card, .news-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-media {
+            width: 100%;
+            border-radius: 10px;
+            margin: 10px 0;
+            object-fit: cover;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-view {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 8px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1><i class="fa-solid fa-shield-halved"></i> Polok Admin Panel</h1>
+
+    <div class="login-box" id="loginForm">
+        <div class="form-group">
+            <label for="email">Admin Email</label>
+            <input type="email" id="email" placeholder="name@example.com">
+        </div>
+        <div class="form-group">
+            <label for="pass">Password</label>
+            <input type="password" id="pass" placeholder="••••••••">
+        </div>
+        <button id="loginBtn" onclick="login()">
+            <i class="fa-solid fa-right-to-bracket"></i> Login
+        </button>
+    </div>
+
+    <button id="logoutBtn" onclick="logoutAdmin()" style="display:none;">
+        <i class="fa-solid fa-door-open"></i> Logout Admin
+    </button>
+
+    <div id="panel" style="display:none;">
+        <hr>
+        
+        <h2><i class="fa-solid fa-image" style="color: var(--accent-cyan);"></i> Photo Upload</h2>
+        <div class="form-group">
+            <label>Select Image File</label>
+            <input type="file" id="photo" accept="image/*">
+        </div>
+        <div class="form-group">
+            <label>Photo Category</label>
+            <select id="photoCategory">
+                <option value="classroom">📚 Classroom</option>
+                <option value="group-study">👥 Group Study</option>
+                <option value="farewell">🎓 Farewell</option>
+                <option value="result-day">📝 Result Day</option>
+                <option value="picnic">🌳 Picnic</option>
+                <option value="funny">😂 Funny Moments</option>
+                <option value="teachers">👨‍🏫 Teachers</option>
+            </select>
+        </div>
+        <button onclick="uploadPhoto()">
+            <i class="fa-solid fa-cloud-arrow-up"></i> Upload Photo
+        </button>
+
+        <hr>
+
+        <h2><i class="fa-solid fa-video" style="color: var(--accent-pink);"></i> Video Upload</h2>
+        <div class="form-group">
+            <label>Video Title</label>
+            <input type="text" id="videoTitle" placeholder="Enter video title...">
+        </div>
+        <div class="form-group">
+            <label>Select Video File</label>
+            <input type="file" id="videoFile" accept="video/*"> 
+        </div>
+        <div class="form-group">
+            <label>Video Category</label>
+            <select id="videoCategory">
+                <option value="classroom">📚 Classroom</option>
+                <option value="group-study">👥 Group Study</option>
+                <option value="farewell">🎓 Farewell</option>
+                <option value="result-day">📝 Result Day</option>
+                <option value="picnic">🌳 Picnic</option>
+                <option value="funny">😂 Funny Moments</option>
+                <option value="teachers">👨‍🏫 Teachers</option>
+            </select>
+        </div>
+        <button onclick="uploadVideo()">
+            <i class="fa-solid fa-circle-play"></i> Upload Video
+        </button>
+
+        <hr>
+
+        <h2><i class="fa-solid fa-newspaper" style="color: var(--accent-yellow);"></i> Upload News</h2>
+        <div class="form-group">
+            <label>News Title</label>
+            <input type="text" id="newsTitle" placeholder="Breaking News Headline">
+        </div>
+        <div class="form-group">
+            <label>News Description</label>
+            <textarea id="newsDesc" placeholder="Write inside details here..." rows="4"></textarea>
+        </div>
+        <div class="form-group">
+            <label>Add Images (Multiple)</label>
+            <input type="file" id="newsImage" accept="image/*" multiple>
+            <img id="preview" class="preview-box">
+        </div>
+        <div class="form-group">
+            <label>Add Videos (Multiple)</label>
+            <input type="file" id="newsVideo" accept="video/*" multiple>
+            <video id="videoPreview" class="preview-box" controls></video>
+        </div>
+        <button onclick="uploadNews()">
+            <i class="fa-solid fa-paper-plane"></i> Publish News
+        </button>
+
+        <hr>
+
+        <h2><i class="fa-solid fa-photo-film"></i> Uploaded Media Gallery</h2>
+        <div id="mediaList"></div>
+        
+        <hr>
+
+        <h2><i class="fa-solid fa-folder-open"></i> Uploaded News Stream</h2>
+        <div id="newsList"></div>
+    </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import {
+getFirestore,
+collection,
+addDoc,
+serverTimestamp,
+onSnapshot,
+deleteDoc,
+doc,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+import {
+getAuth,
+signInWithEmailAndPassword,
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyD_lK2ZVroguo02YoTTkF4yhIryJcRzrOg",
+authDomain: "shidou-4f8b1.firebaseapp.com",
+projectId: "shidou-4f8b1",
+storageBucket: "shidou-4f8b1.firebasestorage.app",
+messagingSenderId: "242900244866",
+appId: "1:242900244866:web:b42bb244511b204288579b"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+function checkAdmin(){
+if(!auth.currentUser){
+alert("Please Login First");
+throw new Error("Not Logged In");
+}
+}
+
+async function login(){
+const email = document.getElementById("email").value;
+const password = document.getElementById("pass").value;
+
+if(!email || !password){
+alert("Email & Password Required");
+return;
+}
+
+try{
+await signInWithEmailAndPassword(auth, email, password);
+document.getElementById("panel").style.display="block";
+document.getElementById("loginForm").style.display="none";
+document.getElementById("logoutBtn").style.display="inline-flex";
+alert("Login Success");
+}catch(e){
+alert("Wrong Email or Password");
+}
+}
+
+async function uploadPhoto(){
+checkAdmin();
+const file = document.getElementById("photo").files[0];
+const category = document.getElementById("photoCategory").value;
+
+if(!file){
+alert("Select Photo");
+return;
+}
+
+let formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset","Shidou");
+
+let res = await fetch("https://api.cloudinary.com/v1_1/dvly97grj/image/upload", {
+method:"POST",
+body:formData
+});
+
+let data = await res.json();
+
+await addDoc(collection(db,"media"),{
+type:"photo",
+url:data.secure_url,
+category:category,
+likes:0,
+views:0,
+createdAt:serverTimestamp()
+});
+
+document.getElementById("photo").value = "";
+alert("Photo Uploaded!");
+}
+
+async function uploadVideo(){
+checkAdmin();
+const title = document.getElementById("videoTitle").value.trim();
+const file = document.getElementById("videoFile").files[0];
+const category = document.getElementById("videoCategory").value; // নতুন যুক্ত করা ক্যাটাগরি আইডি
+
+if(!file){
+alert("Select Video");
+return;
+}
+
+let formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset","Shidou");
+
+let res = await fetch("https://api.cloudinary.com/v1_1/dvly97grj/video/upload", {
+method:"POST",
+body:formData
+});
+
+let data = await res.json();
+
+await addDoc(collection(db,"media"),{
+title: title,   
+type:"video",
+url:data.secure_url,
+category: category, // এখানে ক্যাটাগরি সেভ হবে
+createdAt:serverTimestamp()
+});
+
+document.getElementById("videoFile").value = "";
+document.getElementById("videoTitle").value = "";
+alert("Video Uploaded!");
+}
+
+async function uploadNews(){
+checkAdmin();
+let title=document.getElementById("newsTitle").value;
+let desc = document.getElementById("newsDesc").value;
+let imageFiles = document.getElementById("newsImage").files;
+let videoFiles = document.getElementById("newsVideo").files;
+
+if(!title || !desc){
+alert("Title & Description Required!");
+return;
+}
+
+let imageUrls = [];
+let videoUrls = [];
+
+for(let imageFile of imageFiles){
+let imgData = new FormData();
+imgData.append("file", imageFile);
+imgData.append("upload_preset", "Shidou");
+let imgRes = await fetch("https://api.cloudinary.com/v1_1/dvly97grj/image/upload", {
+method:"POST",
+body:imgData
+});
+let imgResult = await imgRes.json();
+imageUrls.push(imgResult.secure_url);
+}
+
+for(let videoFile of videoFiles){
+let videoData = new FormData();
+videoData.append("file", videoFile);
+videoData.append("upload_preset","Shidou");
+let videoRes = await fetch("https://api.cloudinary.com/v1_1/dvly97grj/video/upload", {
+method:"POST",
+body:videoData
+});
+let videoResult = await videoRes.json();
+videoUrls.push(videoResult.secure_url);
+}
+
+await addDoc(collection(db,"news"),{
+title,
+description:desc,
+images:imageUrls,
+videos:videoUrls,
+createdAt:serverTimestamp()
+});
+
+document.getElementById("newsTitle").value = "";
+document.getElementById("newsDesc").value = "";
+document.getElementById("newsImage").value = "";
+document.getElementById("newsVideo").value = "";
+document.getElementById("preview").style.display = "none";
+document.getElementById("videoPreview").style.display = "none";
+
+alert("News Published!");
+}
+
+window.login = login;
+window.uploadPhoto = uploadPhoto;
+window.uploadVideo = uploadVideo;
+window.uploadNews = uploadNews;
+
+onAuthStateChanged(auth,(user)=>{
+if(user){
+document.getElementById("panel").style.display="block";
+document.getElementById("loginForm").style.display="none";
+document.getElementById("logoutBtn").style.display="inline-flex";
+} else {
+document.getElementById("panel").style.display="none";
+document.getElementById("loginForm").style.display="block";
+document.getElementById("logoutBtn").style.display="none";
+}
+});
+
+document.getElementById("newsVideo").addEventListener("change",function(){
+const file=this.files[0];
+if(file){
+const video=document.getElementById("videoPreview");
+video.src=URL.createObjectURL(file);
+video.style.display="block";
+}
+});
+
+document.getElementById("newsImage").addEventListener("change", function(){
+const file = this.files[0];
+if(file){
+const reader = new FileReader();
+reader.onload = function(e){
+const preview = document.getElementById("preview");
+preview.src = e.target.result;
+preview.style.display = "block";
+};
+reader.readAsDataURL(file);
+}
+});
+
+const mediaList = document.getElementById("mediaList");
+onSnapshot(collection(db,"media"),(snap)=>{
+mediaList.innerHTML="";
+snap.forEach((item)=>{
+const data=item.data();
+const div=document.createElement("div");
+div.className = "media-card";
+
+div.innerHTML=`
+<div>
+    <p><b>Type:</b> <span style="color:var(--accent-cyan); text-transform: capitalize;">${data.type}</span></p>
+    <p><b>Title:</b> ${data.title || "No Title"}</p>
+    <p><b>Category:</b> <span style="text-transform: capitalize;">${data.category || "Not Selected"}</span></p>
+</div>
+<div class="card-actions">
+    <a href="${data.url}" target="_blank" class="btn-view">
+        <i class="fa-solid fa-eye"></i> View Media
+    </a>
+    <button class="btn-delete" onclick="deleteMedia('${item.id}')">
+        <i class="fa-solid fa-trash-can"></i>
+    </button>
+</div>
+`;
+mediaList.appendChild(div);
+});
+});
+
+window.deleteMedia = async function(id){
+checkAdmin();
+if(confirm("Delete this media?")){
+await deleteDoc(doc(db,"media",id));
+alert("Deleted!");
+}
+};
+
+const newsList = document.getElementById("newsList");
+const newsQuery = query(collection(db,"news"), orderBy("createdAt","desc"));
+
+onSnapshot(newsQuery,(snap)=>{
+newsList.innerHTML="";
+snap.forEach((item)=>{
+const data = item.data();
+const div = document.createElement("div");
+div.className = "news-card";
+
+div.innerHTML = `
+<h3>${data.title}</h3>
+${data.images ? data.images.map(img => `<img src="${img}" class="card-media">`).join("") : ""}
+${data.videos ? data.videos.map(video => `<video controls class="card-media"><source src="${video}"></video>`).join("") : ""}
+<p>${data.description}</p>
+<div class="card-actions">
+    <button class="btn-delete" onclick="deleteNews('${item.id}')" style="width: 100%;">
+        <i class="fa-solid fa-trash-can"></i> Delete News Post
+    </button>
+</div>
+`;
+newsList.appendChild(div);
+});
+});
+
+window.deleteNews = async function(id){
+checkAdmin();
+if(confirm("Delete this news?")){
+await deleteDoc(doc(db,"news",id));
+alert("News Deleted!");
+}
+};
+
+window.logoutAdmin = async function(){
+await signOut(auth);
+location.reload();
+}
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+</body>
+</html>

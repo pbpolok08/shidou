@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>About Me</title>
+
+<style>
+:root {
+    --neon-cyan: #00ffff;
+    --neon-blue: #008cff;
+    --neon-purple: #bd00ff;
+    --bg-dark: #02040a;
+    /* একদম মিনিমাম ওপাসিটি দিয়ে আল্ট্রা-ট্রান্সপারেন্ট করা হয়েছে */
+    --card-bg: rgba(255, 255, 255, 0.01);
+    --border-glow: rgba(0, 255, 255, 0.25);
+}
+
+body {
+    background: radial-gradient(circle at 50% 0%, #06102e 0%, var(--bg-dark) 85%);
+    color: #f1f5f9;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 30px 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Hyper-Transparent Crystal Glassmorphism Card */
+.about-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-glow);
+    /* ব্লার ইফেক্ট সর্বোচ্চ লেভেলে রাখা হয়েছে যেন কন্টেন্ট রিডিবল থাকে */
+    backdrop-filter: blur(80px);
+    -webkit-backdrop-filter: blur(80px);
+    border-radius: 36px;
+    padding: 50px 32px;
+    max-width: 550px;
+    width: 100%;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.8), 
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    text-align: center;
+    position: relative;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s, border-color 0.4s;
+    box-sizing: border-box;
+}
+
+@media (hover: hover) {
+    .about-card:hover {
+        transform: translateY(-8px) scale(1.01);
+        border-color: var(--neon-cyan);
+        box-shadow: 0 45px 80px rgba(0, 255, 255, 0.12), inset 0 1px 2px rgba(0, 255, 255, 0.2);
+    }
+}
+
+/* Glowing Avatar Container */
+.avatar-suite {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 28px auto;
+    border-radius: 50%;
+    padding: 3px;
+    background: linear-gradient(135deg, #ffffff, var(--neon-cyan), var(--neon-purple));
+    box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #030712;
+}
+
+.avatar-suite img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.about-card h1 {
+    font-size: clamp(32px, 6vw, 42px);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+    margin: 0 0 8px 0;
+    color: #ffffff;
+    background: linear-gradient(135deg, #ffffff 40%, #e2e8f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.about-card .subtitle {
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 28px;
+}
+
+.about-card p {
+    font-size: clamp(15px, 3.2vw, 17.5px);
+    line-height: 1.8;
+    color: #cbd5e1;
+    margin: 0 0 36px 0;
+    font-weight: 400;
+}
+
+/* Premium Badges Grid */
+.skills-wrapper {
+    text-align: left;
+    margin-bottom: 40px;
+}
+
+.skills-heading {
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #64748b;
+    margin-bottom: 16px;
+    padding-left: 4px;
+}
+
+.skills-capsules {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.capsule {
+    background: rgba(0, 255, 255, 0.03);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    letter-spacing: 0.5px;
+    transition: all 0.25s;
+}
+
+@media (hover: hover) {
+    .capsule:hover {
+        background: #00ffff;
+        color: #02040a;
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+        border-color: #00ffff;
+    }
+}
+
+/* 100% Invisible Background Button till Hover */
+.home-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 32px;
+    background: rgba(255, 255, 255, 0.01);
+    color: white;
+    text-decoration: none;
+    border-radius: 16px;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.home-link:hover, .home-link:active {
+    background: #ffffff;
+    color: #000000;
+    border-color: #ffffff;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+}
+</style>
+</head>
+<body>
+
+<div class="about-card">
+    
+    <div class="avatar-suite">
+        <img src="profile.jpg" alt="Polok">
+    </div>
+
+    <h1>Polok</h1>
+    <div class="subtitle">Developer & Creator</div>
+    
+    <p>
+        Hello! I'm Polok. Welcome to my personal website. I love building premium, interactive, and next-generation web experiences with clean layouts and modern technology.
+    </p>
+
+    <div class="skills-wrapper">
+        <div class="skills-heading">Core Stack</div>
+        <div class="skills-capsules">
+            <span class="capsule">⚡ JavaScript</span>
+            <span class="capsule">🔥 Firebase</span>
+            <span class="capsule">🌐 HTML / CSS</span>
+            <span class="capsule">💻 UI Design</span>
+        </div>
+    </div>
+
+    <a href="index.html" class="home-link">
+        ← Home
+    </a>
+</div>
+
+</body>
+</html>
