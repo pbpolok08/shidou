@@ -8,7 +8,99 @@
     <title>Polok Gallery</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-    
+    <style>
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-input-field {
+            width: 0;
+            opacity: 0;
+            padding: 8px 0;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: #fff;
+            outline: none;
+            transition: all 0.4s ease;
+            font-size: 14px;
+        }
+        .search-wrapper.active .search-input-field {
+            width: 180px;
+            opacity: 1;
+            padding: 8px 15px;
+            margin-right: 8px;
+        }
+        .search-wrapper i {
+            cursor: pointer;
+            padding: 8px;
+        }
+        #searchResults {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            width: 300px;
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 9999;
+            display: none;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #searchResults .result {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            text-decoration: none;
+            color: #fff;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            transition: background 0.3s;
+        }
+        #searchResults .result:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        #searchResults .thumb {
+            width: 45px;
+            height: 45px;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        #searchResults .info h4 {
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        #searchResults .info p {
+            font-size: 11px;
+            color: #aaa;
+        }
+        #searchResults .info small {
+            font-size: 9px;
+            color: #00ffff;
+            text-transform: uppercase;
+        }
+        .no-result {
+            padding: 15px;
+            color: #ff5555;
+            font-size: 13px;
+            text-align: center;
+        }
+        .notification-icon {
+            cursor: pointer;
+            padding: 8px;
+            position: relative;
+        }
+    </style>
 </head>
 <body>
 <div class="glow-ball ball1"></div>
@@ -50,9 +142,13 @@
 
 <div class="nav-right">
 
-<i class="fas fa-search"></i>
+<div class="search-wrapper" id="searchWrapper">
+    <input type="text" id="searchInput" class="search-input-field" placeholder="Search memories..." onkeyup="window.searchPages()">
+    <i class="fas fa-search" onclick="toggleSearchBox()"></i>
+    <div id="searchResults"></div>
+</div>
 
-<i class="fas fa-bell"></i>
+<i class="fas fa-bell notification-icon" onclick="triggerNotification()"></i>
 
 <a href="#" onclick="logout()" class="logout-btn">Logout</a>
 
@@ -493,7 +589,7 @@ Relive unforgettable moments from the HSC 27K Batch journey
     const db = getFirestore(app);
     let contents = [];
 
-    // ফায়ারবেস থেকে নিউজ ডাটা লোড করে সার্চ অ্যারেতে রাখা
+    // ফায়ারবেস থেকে নিউজ ডাটা লোড করেসার্চ অ্যারেতে রাখা
     async function loadSearch(){
         try {
             const snap = await getDocs(collection(db, "news"));
@@ -595,7 +691,7 @@ Relive unforgettable moments from the HSC 27K Batch journey
         });
     }
 
-    // পেজ লোড হওয়ার সাথে সাথে ডাটা কল করার ইভেন্ট (যা মিসিং ছিল)
+    // পেজ লোড হওয়ার সাথে সাথে ডাটা কল করার ইভেন্ট (যা মিসিং ছিল)
     window.addEventListener("DOMContentLoaded", async () => {
         await loadSearch();
         await loadLatestVideos();
@@ -603,8 +699,46 @@ Relive unforgettable moments from the HSC 27K Batch journey
 </script>
 <script type="module" src="script.js"></script>
 
+<script>
+// সার্চ বার খোলা বা বন্ধ করার লজিক
+function toggleSearchBox() {
+    const wrapper = document.getElementById('searchWrapper');
+    const input = document.getElementById('searchInput');
+    const results = document.getElementById('searchResults');
+    
+    wrapper.classList.toggle('active');
+    if(wrapper.classList.contains('active')) {
+        input.focus();
+    } else {
+        input.value = "";
+        results.style.display = "none";
+    }
+}
 
+// বাইরে ক্লিক করলে সার্চ ড্রপডাউন বন্ধ হওয়ার লজিক
+document.addEventListener('click', function(e) {
+    const wrapper = document.getElementById('searchWrapper');
+    const results = document.getElementById('searchResults');
+    if (wrapper && !wrapper.contains(e.target)) {
+        wrapper.classList.remove('active');
+        if(results) results.style.display = "none";
+    }
+});
 
+// নোটিফিকেশন ক্লিক অ্যালার্ট ফাংশন
+function triggerNotification() {
+    alert("🔔 No new notifications. Your gallery is up to date!");
+}
+
+function logout() {
+    // Login Data Remove
+    localStorage.removeItem("loggedIn");
+    localStorage.removeItem("admin");
+
+    // Login Page এ পাঠাবে
+    window.location.href = "login.html";
+}
+</script>
 
 </body>
-</html>
+    </html>
